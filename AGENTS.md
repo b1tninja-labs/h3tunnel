@@ -1,0 +1,58 @@
+# Instructions for coding agents
+
+MASQUE tunnels: HTTP Datagrams and the Capsule Protocol, CONNECT-UDP and CONNECT-IP clients, and the proxy side that terminates them.
+
+Primary documents are listed in `docs/rfc-map.md` with statuses and known errata.
+The obligation table in `ROADMAP.md` is the work queue, and `README.md` explains
+what the library is for. Read those three before changing anything.
+
+## Commands
+
+    python -m pip install -e ".[dev]"
+    python -m pytest -q
+    python -m pytest -q tests/test_roadmap_rows.py
+    python -m pytest -q tests/test_public_api.py::test_stubs_are_loud
+    python -m ruff check .
+    python -m ruff format --check .
+    python -m mypy h3tunnel
+
+The first line installs the dev extras. The six commands after it are the gates,
+and all six must pass before a change is finished. CI runs the same set on Linux
+and Windows, plus the suite under `python -O`.
+
+## Invariants
+
+These are the points where a plausible-looking change makes the project wrong
+rather than merely incomplete.
+
+1. **Roadmap honesty.** Never change a `ROADMAP.md` row from `[ ]` to `[x]` unless
+   the test named in its `Evidence` cell exists and passes. `tests/test_roadmap_rows.py`
+   fails on any row that claims done without a named test, and that check is the
+   reason the roadmap can be trusted. Do not weaken it, skip it, or delete it to
+   get a green run.
+2. **No silent stubs.** Code that is not implemented raises `NotImplementedError`.
+   Never return an empty value, an empty collection, or a result object that reports
+   success. A protocol library that answers nothing is worse than one that refuses
+   to answer, and `tests/test_public_api.py` enforces that every stub is loud.
+3. **Normative text is never paraphrased from memory.** Fetch it with `rfclib` and
+   cite the section. If the text you fetch does not say what the obligation claims,
+   the obligation is wrong: fix the roadmap row and say so in the commit.
+4. **Dependencies.** `pyproject.toml` here declares no runtime dependencies. Adding a runtime
+   dependency needs a paragraph of justification in `docs/strategy.md` explaining
+   why the standard library is not enough.
+5. **Scope.** What is deliberately absent is listed under Non-goals in `README.md`.
+   An agent that "helpfully" implements a non-goal has expanded the API surface that
+   has to be supported forever.
+
+## Read before implementing
+
+- RFC 9484 verified erratum 8444, sec. 4.6: the wildcard value for target and ipproto MUST be percent-encoded, so it travels as %2A. Examples in sec. 4.2 and 4.4 are corrected too. Get this wrong and CONNECT-IP does not interoperate.
+- RFC 9931 updates RFC 9298 sec. 5: optimistic sending before the response is allowed in HTTP/2 and HTTP/3 but not in HTTP/1.1.
+- RFC 9297 and RFC 9298 report no errata as of 2026-10-29.
+
+## Protocol work
+
+`.clinerules/10-rfclib.md` describes the `rfclib` calls to make for each obligation
+and lists the section refs for this project. If you are not running in Cline, the
+same procedure applies: confirm the document, read its errata, pull the normative
+statements, then write code.
