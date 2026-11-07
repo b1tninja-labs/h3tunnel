@@ -15,8 +15,8 @@ import pytest
 import h3tunnel as package
 
 SURFACE = [
-    ("capsule", "encode_capsule", "RFC 9297"),
-    ("capsule", "decode_capsule", "RFC 9297"),
+    ("capsule", "encode_capsule", "RFC 9297 sec. 3.2"),
+    ("capsule", "decode_capsule", "RFC 9297 sec. 3.2"),
     ("httpdatagram", "encode_datagram", "RFC 9298 sec. 5"),
     ("ctx", "allocate_context", "RFC 9298 sec. 4"),
     ("connect_udp", "build_request", "RFC 9298 sec. 3"),
@@ -42,7 +42,10 @@ def test_surface_is_documented(module_name, fn, cite):
     module = importlib.import_module(package.__name__ + "." + module_name)
     target = getattr(module, fn)
     assert target.__doc__, fn + " needs a docstring"
-    assert cite in target.__doc__, fn + " must cite the document that defines it"
+    # Docstrings are wrapped, so a long citation can span a line break; compare words, not layout.
+    assert " ".join(cite.split()) in " ".join(target.__doc__.split()), (
+        fn + " must cite the document that defines it"
+    )
 
 
 @pytest.mark.parametrize(("module_name", "fn", "cite"), SURFACE)

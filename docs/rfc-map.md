@@ -8,7 +8,7 @@
 | RFC 9221 | Proposed Standard | 2022-03 | 2026-11-05 |
 | RFC 9114 | Proposed Standard | 2022-06 | 2026-11-05 |
 | RFC 9220 | Proposed Standard | 2022-06 | 2026-11-05 |
-| RFC 9931 | Proposed Standard | 2025-09 | 2026-11-05 |
+| RFC 9931 | Proposed Standard | 2026-03 | 2026-11-05 |
 
 Citation rules, in the order they most often get broken:
 

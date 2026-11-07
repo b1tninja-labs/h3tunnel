@@ -1,4 +1,4 @@
-"""MTU, ECN and optimistic-send rules (RFC 9298 sec. 6, RFC 9931).
+"""MTU, ECN and optimistic-send rules (RFC 9298 sec. 6, RFC 9931 sec. 6.3).
 
 Every object in this module is a placeholder until the milestone named in ROADMAP.md lands. A
 stub raises instead of returning a plausible empty value: a protocol library that silently

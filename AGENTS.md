@@ -25,11 +25,13 @@ and Windows, plus the suite under `python -O`.
 These are the points where a plausible-looking change makes the project wrong
 rather than merely incomplete.
 
-1. **Roadmap honesty.** Never change a `ROADMAP.md` row from `[ ]` to `[x]` unless
-   the test named in its `Evidence` cell exists and passes. `tests/test_roadmap_rows.py`
-   fails on any row that claims done without a named test, and that check is the
-   reason the roadmap can be trusted. Do not weaken it, skip it, or delete it to
-   get a green run.
+1. **Roadmap honesty.** Never change a `ROADMAP.md` row from `[ ]` to `[ok]` unless
+   the test named in its `Where` cell exists, passes, and would fail if the behaviour
+   regressed. A Where cell marked `(to be written)` names a test nobody has written:
+   write it, then drop the marker in the same commit that flips the row.
+   `tests/test_roadmap_rows.py` checks only that every row names a callable the
+   package defines; it cannot tell a passing test from a missing one, so this rule
+   is the check. Do not weaken that test, skip it, or delete it to get a green run.
 2. **No silent stubs.** Code that is not implemented raises `NotImplementedError`.
    Never return an empty value, an empty collection, or a result object that reports
    success. A protocol library that answers nothing is worse than one that refuses
@@ -47,8 +49,8 @@ rather than merely incomplete.
 ## Read before implementing
 
 - RFC 9484 verified erratum 8444, sec. 4.6: the wildcard value for target and ipproto MUST be percent-encoded, so it travels as %2A. Examples in sec. 4.2 and 4.4 are corrected too. Get this wrong and CONNECT-IP does not interoperate.
-- RFC 9931 updates RFC 9298 sec. 5: optimistic sending before the response is allowed in HTTP/2 and HTTP/3 but not in HTTP/1.1.
-- RFC 9297 and RFC 9298 report no errata as of 2026-10-29.
+- RFC 9931 (2026-03) sec. 6.3 replaces the optimistic-sending text of RFC 9298 sec. 5: a client MAY send UDP packets in HTTP Datagrams before the response only on HTTP/2 or later, and MUST NOT on HTTP/1.x.
+- RFC 9297, RFC 9298 and RFC 9931 report no errata as of the 2026-10-29 errata feed (rfclib, read 2026-11-06).
 
 ## Protocol work
 

@@ -49,13 +49,13 @@ document, which is the honest grain size for a plan. See [docs/rfc-map.md](docs/
 | RFC 9221 | Proposed Standard | 2022-03 | the QUIC DATAGRAM extension HTTP Datagrams ride on |
 | RFC 9114 | Proposed Standard | 2022-06 | HTTP/3 stream and setting rules the tunnels live inside |
 | RFC 9220 | Proposed Standard | 2022-06 | extended CONNECT over HTTP/3, the pattern this reuses |
-| RFC 9931 | Proposed Standard | 2025-09 | what may be sent optimistically before the response arrives |
+| RFC 9931 | Proposed Standard | 2026-03 | what may be sent optimistically before the response arrives |
 
 ### Errata watch
 
 - RFC 9484 verified erratum 8444, sec. 4.6: the wildcard value for target and ipproto MUST be percent-encoded, so it travels as %2A. Examples in sec. 4.2 and 4.4 are corrected too. Get this wrong and CONNECT-IP does not interoperate.
-- RFC 9931 updates RFC 9298 sec. 5: optimistic sending before the response is allowed in HTTP/2 and HTTP/3 but not in HTTP/1.1.
-- RFC 9297 and RFC 9298 report no errata as of 2026-10-29.
+- RFC 9931 (2026-03) sec. 6.3 replaces the optimistic-sending text of RFC 9298 sec. 5: a client MAY send UDP packets in HTTP Datagrams before the response only on HTTP/2 or later, and MUST NOT on HTTP/1.x.
+- RFC 9297, RFC 9298 and RFC 9931 report no errata as of the 2026-10-29 errata feed (rfclib, read 2026-11-06).
 
 ## Module layout
 
@@ -66,7 +66,7 @@ document, which is the honest grain size for a plan. See [docs/rfc-map.md](docs/
 | `ctx` | context identifier allocation and demultiplexing (RFC 9298 sec. 4) |
 | `connect_udp` | CONNECT-UDP request and response construction (RFC 9298 sec. 3) |
 | `connect_ip` | CONNECT-IP URI template and IP packet framing (RFC 9484) |
-| `limits` | MTU, ECN and optimistic-send rules (RFC 9298 sec. 6, RFC 9931) |
+| `limits` | MTU, ECN and optimistic-send rules (RFC 9298 sec. 6, RFC 9931 sec. 6.3) |
 | `sansio` | transport-neutral tunnel state machine |
 | `aio` | asyncio client and proxy server over a pluggable QUIC adapter |
 
@@ -80,7 +80,8 @@ document, which is the honest grain size for a plan. See [docs/rfc-map.md](docs/
 ## Install
 
 ```bash
-git clone https://github.com/b1tninja/h3tunnel.cd h3tunnel
+git clone https://github.com/b1tninja/h3tunnel.git
+cd h3tunnel
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\\Scripts\\Activate.ps1
 pip install -e ".[dev]"

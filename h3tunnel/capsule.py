@@ -21,18 +21,18 @@ __all__ = [
 
 
 def encode_capsule(capsule_type: int, body: bytes) -> Capsule:
-    """Pending behaviour defined by RFC 9297.
+    """Pending behaviour defined by RFC 9297 sec. 3.2.
 
     Not implemented yet. See the ``capsule.encode_capsule()`` row in ROADMAP.md; this
     stub raises on purpose so nothing downstream mistakes it for working code.
     """
-    raise NotImplementedError("encode_capsule() is not implemented: RFC 9297")
+    raise NotImplementedError("encode_capsule() is not implemented: RFC 9297 sec. 3.2")
 
 
 def decode_capsule(payload: bytes) -> tuple:
-    """Pending behaviour defined by RFC 9297.
+    """Pending behaviour defined by RFC 9297 sec. 3.2.
 
     Not implemented yet. See the ``capsule.decode_capsule()`` row in ROADMAP.md; this
     stub raises on purpose so nothing downstream mistakes it for working code.
     """
-    raise NotImplementedError("decode_capsule() is not implemented: RFC 9297")
+    raise NotImplementedError("decode_capsule() is not implemented: RFC 9297 sec. 3.2")

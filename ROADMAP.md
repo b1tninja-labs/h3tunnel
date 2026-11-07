@@ -11,23 +11,27 @@ behaviour regressed. Reading the code and agreeing with it is not enough. That i
 Legend: `[ok]` implemented and pinned by a named test -- `[part]` partial, with what is
 missing stated -- `[ ]` not implemented -- `[no]` deliberate non-goal.
 
+A Where cell marked `(to be written)` names the test that will pin the row once it exists; no
+such test has been written yet, and the row cannot leave `[ ]` until it has. The Milestone
+column places the row on the ladder in section 2, and `-` means it is not placed yet.
+
 Update the affected row in the same commit that changes the behaviour. A row and its test
 drift apart within one release, and the document becomes useless exactly when it is needed.
 
 ## 1. Obligations
 
-| Obligation | Spec | Status | Where |
-|---|---|---|---|
-| `capsule.encode_capsule()` | RFC 9297 | `[ ]` | `tests/test_obligations.py::encode_capsule` |
-| `capsule.decode_capsule()` | RFC 9297 | `[ ]` | `tests/test_obligations.py::decode_capsule` |
-| `httpdatagram.encode_datagram()` | RFC 9298 sec. 5 | `[ ]` | `tests/test_obligations.py::encode_datagram` |
-| `ctx.allocate_context()` | RFC 9298 sec. 4 | `[ ]` | `tests/test_obligations.py::allocate_context` |
-| `connect_udp.build_request()` | RFC 9298 sec. 3 | `[ ]` | `tests/test_obligations.py::build_request` |
-| `connect_ip.target_uri()` | RFC 9484 sec. 4.6 | `[ ]` | `tests/test_obligations.py::target_uri` |
-| `limits.clamp_payload()` | RFC 9298 sec. 6.1 | `[ ]` | `tests/test_obligations.py::clamp_payload` |
-| `sansio.on_datagram()` | RFC 9298 | `[ ]` | `tests/test_obligations.py::on_datagram` |
-| `aio.open_udp_tunnel()` | RFC 9298 | `[ ]` | `tests/test_obligations.py::open_udp_tunnel` |
-| `aio.serve_proxy()` | RFC 9298 sec. 3.1 | `[ ]` | `tests/test_obligations.py::serve_proxy` |
+| Obligation | Spec | Status | Where | Milestone |
+|---|---|---|---|---|
+| `capsule.encode_capsule()` | RFC 9297 sec. 3.2 | `[ ]` | `tests/test_obligations.py::test_encode_capsule` (to be written) | M1 |
+| `capsule.decode_capsule()` | RFC 9297 sec. 3.2 | `[ ]` | `tests/test_obligations.py::test_decode_capsule` (to be written) | M1 |
+| `httpdatagram.encode_datagram()` | RFC 9298 sec. 5 | `[ ]` | `tests/test_obligations.py::test_encode_datagram` (to be written) | M1 |
+| `ctx.allocate_context()` | RFC 9298 sec. 4 | `[ ]` | `tests/test_obligations.py::test_allocate_context` (to be written) | M2 |
+| `connect_udp.build_request()` | RFC 9298 sec. 3 | `[ ]` | `tests/test_obligations.py::test_build_request` (to be written) | M2 |
+| `connect_ip.target_uri()` | RFC 9484 sec. 4.6 | `[ ]` | `tests/test_obligations.py::test_target_uri` (to be written) | M5 |
+| `limits.clamp_payload()` | RFC 9298 sec. 6.1 | `[ ]` | `tests/test_obligations.py::test_clamp_payload` (to be written) | M4 |
+| `sansio.on_datagram()` | RFC 9298 | `[ ]` | `tests/test_obligations.py::test_on_datagram` (to be written) | M2 |
+| `aio.open_udp_tunnel()` | RFC 9298 | `[ ]` | `tests/test_obligations.py::test_open_udp_tunnel` (to be written) | M3 |
+| `aio.serve_proxy()` | RFC 9298 sec. 3.1 | `[ ]` | `tests/test_obligations.py::test_serve_proxy` (to be written) | M4 |
 
 ## 2. Milestones
 
@@ -44,8 +48,8 @@ the code existing. Coverage in `pyproject.toml` ratchets in the same commit.
 ## 3. Errata watch
 
 - RFC 9484 verified erratum 8444, sec. 4.6: the wildcard value for target and ipproto MUST be percent-encoded, so it travels as %2A. Examples in sec. 4.2 and 4.4 are corrected too. Get this wrong and CONNECT-IP does not interoperate.
-- RFC 9931 updates RFC 9298 sec. 5: optimistic sending before the response is allowed in HTTP/2 and HTTP/3 but not in HTTP/1.1.
-- RFC 9297 and RFC 9298 report no errata as of 2026-10-29.
+- RFC 9931 (2026-03) sec. 6.3 replaces the optimistic-sending text of RFC 9298 sec. 5: a client MAY send UDP packets in HTTP Datagrams before the response only on HTTP/2 or later, and MUST NOT on HTTP/1.x.
+- RFC 9297, RFC 9298 and RFC 9931 report no errata as of the 2026-10-29 errata feed (rfclib, read 2026-11-06).
 
 ## 4. Deliberate non-goals
 

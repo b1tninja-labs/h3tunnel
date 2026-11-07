@@ -52,7 +52,7 @@ with their line ranges.
 - RFC 9221 (Proposed Standard, 2022-03)
 - RFC 9114 (Proposed Standard, 2022-06)
 - RFC 9220 (Proposed Standard, 2022-06)
-- RFC 9931 (Proposed Standard, 2025-09)
+- RFC 9931 (Proposed Standard, 2026-03)
 
 ## Traps that have already bitten this portfolio
 
