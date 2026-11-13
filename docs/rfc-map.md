@@ -9,6 +9,8 @@
 | RFC 9114 | Proposed Standard | 2022-06 | 2026-11-05 |
 | RFC 9220 | Proposed Standard | 2022-06 | 2026-11-05 |
 | RFC 9931 | Proposed Standard, updates RFC 9112 and RFC 9298 | 2026-03 | 2026-11-13 |
+| RFC 8200 | Internet Standard (STD 86), 2 verified errata on sec. 4; the extension header sizes in `ip_datagram` come from sec. 4 and the IANA registry | 2017-07 | 2026-11-13 |
+| IANA IPv6 Extension Header Types | Registry (CC0), `https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xml` read raw 2026-11-13, 18,671 bytes, sha256 `e72e0f04127f46003184b8db1b6a5222b1cfa3135449191f490ebfa997a1218b`, updated 2025-12-24: 0, 43, 44, 50, 51, 60, 135, 140, 253, 254 | 2025 | 2026-11-13 |
 | RFC 9000 | Proposed Standard, current, 6 verified errata (none on sec. 16 or Appendix A.1) | 2021-05 | 2026-11-13 |
 | RFC 6570 | Proposed Standard, current, verified erratum 6937 (sec. 2.1) | 2012-03 | 2026-11-13 |
 | RFC 9651 | Proposed Standard, obsoletes RFC 8941 (the sibling `sfields`) | 2024-09 | 2026-11-13 |
