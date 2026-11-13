@@ -33,8 +33,12 @@ from __future__ import annotations
 
 import ipaddress
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from .limits import MAX_UDP_PAYLOAD
+
+if TYPE_CHECKING:
+    from sfields.model import BareItem
 
 __all__ = [
     "MIN_IDLE_SECONDS",
@@ -58,7 +62,6 @@ MIN_IDLE_SECONDS = (
 _IPV4_HEADER = 20  # no options: the smallest header, so the largest payload that can fit
 _IPV6_HEADER = 40
 _UDP_HEADER = 8
-_TOKEN = "!#$%&'*+-.^_`|~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:/"  # noqa: S105 - the RFC 8941 token characters, not a secret
 
 
 @dataclass(frozen=True)
@@ -110,14 +113,16 @@ class CloseStream:
     reason: str
 
 
-def _identity(name: str) -> str:
-    if not name:
-        raise ValueError("the proxy identity must not be empty")
-    if (name[0].isalpha() or name[0] == "*") and all(c in _TOKEN for c in name):
-        return name
-    if any(ord(c) < 0x20 or ord(c) > 0x7E for c in name):
-        raise ValueError("the proxy identity must be printable ASCII")
-    return '"' + name.replace("\\", "\\\\").replace('"', '\\"') + '"'
+def _sf():
+    """The sibling ``sfields`` project, by path in development (see pyproject.toml)."""
+    try:
+        import sfields
+        from sfields import model, serialize
+    except ImportError as error:  # pragma: no cover - the sibling is on the test path
+        raise ImportError(
+            "h3tunnel serialises Proxy-Status with sfields (RFC 9651); put ../sfields on the path"
+        ) from error
+    return sfields, model, serialize
 
 
 def proxy_status(
@@ -127,17 +132,34 @@ def proxy_status(
 
     RFC 9209 sec. 2: a List member that is a Token or String, with the ``error`` parameter a
     Token (sec. 2.1.1) and, for ``dns_error``, the String ``rcode`` and Integer ``info-code``
-    (sec. 2.3.2). Serialization is RFC 8941 sec. 4, which :mod:`sfields` owns; this writes the
-    few shapes it needs by hand.
+    (sec. 2.3.2). Serialization is RFC 9651 sec. 4, done by :mod:`sfields`; a Token identity stays
+    bare and anything else becomes a String.
     """
-    if not error or not all(c in _TOKEN for c in error) or not error[0].isalpha():
-        raise ValueError("the error parameter is a Token")
-    out = f"{_identity(identity)}; error={error}"
+    sfields, model, serialize = _sf()
+    if not identity:
+        raise ValueError("the proxy identity must not be empty")
+    if not identity.isascii() or any(ord(c) < 0x20 or ord(c) == 0x7F for c in identity):
+        raise ValueError("the proxy identity must be printable ASCII")
+    try:
+        name: BareItem = model.Token(identity)
+        serialize.serialize_bare_item(name)
+    except sfields.SerializeError:
+        name = model.String(identity)
+    params: list[tuple[str, BareItem]] = []
+    try:
+        error_token = model.Token(error)
+        serialize.serialize_bare_item(error_token)
+    except sfields.SerializeError as exc:
+        raise ValueError("the error parameter is a Token") from exc
+    params.append(("error", error_token))
     if rcode is not None:
-        out += '; rcode="' + rcode.replace("\\", "\\\\").replace('"', '\\"') + '"'
+        params.append(("rcode", model.String(rcode)))
     if info_code is not None:
-        out += f"; info-code={int(info_code)}"
-    return out
+        params.append(("info-code", model.Integer(int(info_code))))
+    try:
+        return serialize.serialize_item(model.Item(name, model.Params(params)))
+    except sfields.SerializeError as exc:
+        raise ValueError(str(exc)) from exc
 
 
 def reject_dns_error(

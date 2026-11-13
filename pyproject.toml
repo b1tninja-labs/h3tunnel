@@ -32,7 +32,9 @@ classifiers = [
 ]
 # Empty unless a module cannot be honest without it. Every entry needs a sentence in
 # README.md explaining why the zero-dependency rule was broken for it.
-dependencies = []
+# sfields (RFC 9651) serialises Proxy-Status and parses Capsule-Protocol; it is not on an index yet, so
+# it resolves from the sibling checkout (pytest pythonpath, mypy_path) and CI checks it out.
+dependencies = ["sfields"]
 
 [project.optional-dependencies]
 dev = [

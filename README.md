@@ -14,8 +14,8 @@ rule, and CONNECT-IP target URIs with the three IP capsules. **No network code e
 `NotImplementedError`, and QUIC and HTTP/3 transport is an owner decision (adapter or cut, ROADMAP
 section 5). Read [ROADMAP.md](ROADMAP.md) before depending on any of it.
 
-Dependencies: none at runtime. Reading a received Capsule-Protocol header uses the sibling
-`sfields` project by path (RFC 9651); everything else is standard library.
+Dependencies: the sibling `sfields` project (RFC 9651), by path until it publishes. It parses the
+Capsule-Protocol header and serialises `Proxy-Status`. Everything else is standard library.
 
 h3tunnel -- CONNECT-UDP and CONNECT-IP in Python
 

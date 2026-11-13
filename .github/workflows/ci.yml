@@ -13,6 +13,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      # sfields is an unpublished sibling (see pyproject.toml); install it before this project resolves.
+      - uses: actions/checkout@v4
+        with:
+          repository: b1tninja/sfields
+          path: .deps/sfields
+      - run: python -m pip install --no-deps .deps/sfields
       - run: python -m pip install -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
@@ -39,6 +45,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      # sfields is an unpublished sibling (see pyproject.toml); install it before this project resolves.
+      - uses: actions/checkout@v4
+        with:
+          repository: b1tninja/sfields
+          path: .deps/sfields
+      - run: python -m pip install --no-deps .deps/sfields
       - run: python -m pip install -e ".[dev]"
       - run: python -m pytest -q --cov
       # Asserts stripped: a wire path guarded by assert is unguarded in production.

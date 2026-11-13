@@ -30,27 +30,37 @@ def test_resolution_failures_are_rejected_with_proxy_status():
     # RFC 9209 sec. 2.3.2 and sec. 2.3.1: dns_error is 502 and dns_timeout is 504
     error = proxy.reject_dns_error("proxy.example", rcode="NXDOMAIN")
     assert error.status == 502
-    assert error.proxy_status == 'proxy.example; error=dns_error; rcode="NXDOMAIN"'
+    assert error.proxy_status == 'proxy.example;error=dns_error;rcode="NXDOMAIN"'
     detailed = proxy.reject_dns_error("proxy.example", rcode="SERVFAIL", info_code=23)
-    assert detailed.proxy_status.endswith('rcode="SERVFAIL"; info-code=23')
+    assert detailed.proxy_status.endswith('rcode="SERVFAIL";info-code=23')
     timeout = proxy.reject_dns_timeout("proxy.example")
-    assert (timeout.status, timeout.proxy_status) == (504, "proxy.example; error=dns_timeout")
+    assert (timeout.status, timeout.proxy_status) == (504, "proxy.example;error=dns_timeout")
     prohibited = proxy.reject_prohibited("proxy.example")
     assert (prohibited.status, prohibited.proxy_status) == (
         502,
-        "proxy.example; error=destination_ip_prohibited",
+        "proxy.example;error=destination_ip_prohibited",
     )
 
 
 def test_proxy_status_serialisation():
     # a Token identity stays bare, anything else becomes a String (RFC 9209 sec. 2 paragraph 7)
     assert proxy.proxy_status("ExampleCDN", "connection_timeout") == (
-        "ExampleCDN; error=connection_timeout"
+        "ExampleCDN;error=connection_timeout"
     )
-    assert proxy.proxy_status("my proxy 3", "dns_error") == '"my proxy 3"; error=dns_error'
+    assert proxy.proxy_status("my proxy 3", "dns_error") == '"my proxy 3";error=dns_error'
     assert proxy.proxy_status('a"b', "dns_error", rcode='x"y') == (
-        '"a\\"b"; error=dns_error; rcode="x\\"y"'
+        '"a\\"b";error=dns_error;rcode="x\\"y"'
     )
+    # the output is what sfields parses back: a List member with a Token error and a String rcode
+    import sfields
+
+    parsed = sfields.parse_field(
+        proxy.proxy_status("proxy.example", "dns_error", rcode="NXDOMAIN", info_code=23), "list"
+    )
+    assert parsed[0].value == sfields.model.Token("proxy.example")
+    assert parsed[0].params["error"] == sfields.model.Token("dns_error")
+    assert parsed[0].params["rcode"] == sfields.model.String("NXDOMAIN")
+    assert parsed[0].params["info-code"] == sfields.model.Integer(23)
     for bad_error in ("", "9x", "has space"):
         with pytest.raises(ValueError, match="Token"):
             proxy.proxy_status("p", bad_error)
