@@ -12,12 +12,12 @@ other way round.
 
 ## Position
 
-**Tier 3, wave 3** - the routing-operations story. Tier 3 is planned: a solid gap with no
+**Tier 3, wave 5** - the rest, in tier order, one at a time (PORTFOLIO section 7). Tier 3 is planned: a solid gap with no
 urgency, and better work once Tier 1 exists.
 
 ## Depends on
 
-None. The portfolio plan puts no other project between this one and a first release: every
+One soft edge and no blocker. The codecs and request builders depend on nothing. The Capsule-Protocol header is an Item Structured Field (RFC 9297 sec. 3.4), so reading a received one uses the sibling `sfields` by path (`pyproject.toml` pytest `pythonpath` and mypy path); emitting `?1` needs no parser. The QUIC and HTTP/3 transport has no standard-library or `cryptography` path: adapter or cut, an owner decision in ROADMAP section 5. Beyond that, the portfolio plan puts no other project between this one and a first release: every
 obligation in [../ROADMAP.md](../ROADMAP.md) is this repository's own, and nothing outside it
 has to land first. That cuts both ways - a missing dependency is never the reason this project
 has not shipped, and its wave position is the only thing holding it back.

@@ -56,7 +56,11 @@ rather than merely incomplete.
    the obligation is wrong: fix the roadmap row and say so in the commit.
 4. **Dependencies.** `pyproject.toml` here declares no runtime dependencies. Adding a runtime
    dependency needs a paragraph of justification in `docs/strategy.md` explaining
-   why the standard library is not enough.
+   why the standard library is not enough. Portfolio rule (FANOUT brief, 2026-11-13): standard
+   library only; the `cryptography` package may supply cryptographic primitives and nothing else;
+   every wire format is ours. h3tunnel needs no cryptography; the QUIC transport is an owner decision
+   (adapter or cut) recorded in `ROADMAP.md`. `sfields` is used by sibling path for the
+   Capsule-Protocol header (`pyproject.toml` pytest `pythonpath`, mypy_path).
 5. **Scope.** What is deliberately absent is listed under Non-goals in `README.md`.
    An agent that "helpfully" implements a non-goal has expanded the API surface that
    has to be supported forever.

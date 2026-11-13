@@ -32,7 +32,10 @@ def main(argv=None):
     parser = build_parser()
     parser.parse_args(argv)
     parser.print_usage(sys.stderr)
-    print("h3tunnel: no protocol behaviour is implemented yet; see ROADMAP.md", file=sys.stderr)
+    print(
+        "h3tunnel: no tunnel is implemented yet (only the codecs are); see ROADMAP.md",
+        file=sys.stderr,
+    )
     return 2
 
 

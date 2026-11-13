@@ -70,7 +70,9 @@ include = ["/h3tunnel/", "/tests/", "/docs/", "/README.md", "/ROADMAP.md", "/CHA
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+# "../sfields" resolves the Capsule-Protocol header parser (RFC 9651) from the sibling checkout in the
+# portfolio workspace, as certledger does for asn1core; at release time it becomes a PyPI dependency.
+pythonpath = [".", "../sfields"]
 asyncio_mode = "auto"
 addopts = "-ra"
 
@@ -83,7 +85,7 @@ source = ["h3tunnel"]
 # coverage for the line that raises. Raise this in the commit that implements a
 # milestone, never in a commit that only adds tests, so the number keeps meaning
 # "this behaviour is exercised" rather than "this file was imported".
-fail_under = 45
+fail_under = 88
 show_missing = true
 exclude_lines = [
   "if __name__ == .__main__.:",
@@ -106,7 +108,10 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # S101 in tests is the policy, S311 is a seeded generator rather than a token, and a
 # test double has to accept parameters it ignores, which ARG would otherwise flag.
-"tests/*" = ["S101", "S106", "S311", "ARG001", "ARG002"]
+"tests/*" = ["S101", "S104", "S106", "S311", "ARG001", "ARG002"]
+# These are exceptions in the sense of the RFCs, not an error-suffix convention: an Incomplete
+# buffer and a MalformedCapsule read as the protocol states them.
+"h3tunnel/errors.py" = ["N818"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -118,3 +123,4 @@ warn_unused_ignores = true
 warn_redundant_casts = true
 no_implicit_optional = true
 ignore_missing_imports = true
+mypy_path = "../sfields"

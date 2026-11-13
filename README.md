@@ -5,10 +5,17 @@
      the badges stay commented out until the tag exists.
 -->
 
-**Pre-alpha shell.** The package surface, the obligation matrix and the CI gates exist.
-No protocol behaviour is implemented: every public function raises `NotImplementedError`,
-and the test suite records that rather than hiding it. Read
-[ROADMAP.md](ROADMAP.md) before depending on any of it.
+**Pre-alpha, codecs implemented.** The transport-free half is done and tested: QUIC variable-length
+integers, the Capsule Protocol (framing, an incremental parser with a bounded buffer, the
+Capsule-Protocol header), HTTP Datagram payloads and the HTTP/3 Quarter Stream ID, Context ID
+allocation, the CONNECT-UDP template validator and request builder, the RFC 9931 optimistic-send
+rule, and CONNECT-IP target URIs with the three IP capsules. **No network code exists yet**:
+`sansio.on_datagram`, `aio.open_udp_tunnel` and `aio.serve_proxy` still raise
+`NotImplementedError`, and QUIC and HTTP/3 transport is an owner decision (adapter or cut, ROADMAP
+section 5). Read [ROADMAP.md](ROADMAP.md) before depending on any of it.
+
+Dependencies: none at runtime. Reading a received Capsule-Protocol header uses the sibling
+`sfields` project by path (RFC 9651); everything else is standard library.
 
 h3tunnel -- CONNECT-UDP and CONNECT-IP in Python
 
@@ -50,6 +57,9 @@ document, which is the honest grain size for a plan. See [docs/rfc-map.md](docs/
 | RFC 9114 | Proposed Standard | 2022-06 | HTTP/3 stream and setting rules the tunnels live inside |
 | RFC 9220 | Proposed Standard | 2022-06 | extended CONNECT over HTTP/3, the pattern this reuses |
 | RFC 9931 | Proposed Standard | 2026-03 | what may be sent optimistically before the response arrives |
+| RFC 9000 | Proposed Standard | 2021-05 | the variable-length integer (sec. 16, Appendix A.1) |
+| RFC 6570 | Proposed Standard | 2012-03 | URI Templates, the level-3 subset that RFC 9298 and RFC 9484 allow |
+| RFC 9651 | Proposed Standard | 2024-09 | Structured Fields, for the Capsule-Protocol header (sibling `sfields`) |
 
 ### Errata watch
 
@@ -61,6 +71,9 @@ document, which is the honest grain size for a plan. See [docs/rfc-map.md](docs/
 
 | Module | Responsibility |
 |---|---|
+| `varint` | QUIC variable-length integers (RFC 9000 sec. 16) |
+| `errors` | the exceptions of the codecs, with the HTTP/3 error codes they carry |
+| `template` | the URI Template subset of RFC 9298 sec. 2 and RFC 9484 sec. 3 |
 | `capsule` | capsule framing and the registered capsule types (RFC 9297) |
 | `httpdatagram` | HTTP Datagram payload with the context identifier (RFC 9298 sec. 5) |
 | `ctx` | context identifier allocation and demultiplexing (RFC 9298 sec. 4) |
